@@ -126,6 +126,33 @@ function animateImagery(){
     })
 }
 
+function locoinitialize() {
+    const scroll = new LocomotiveScroll({
+        el: document.querySelector('#main'),
+        smooth: true
+    });
+}
+
+function cardHoverEffect() {
+    document.querySelectorAll(".cnt")
+    .forEach(function(cnt){
+        var showingImage;
+        cnt.addEventListener("mousemove", function(dets){
+            document.querySelector("#cursor").children[dets.target.dataset.index].style.opacity = 1
+            showingImage = dets.target
+            let x = dets.pageX;
+            let y = dets.pageY;
+            document.querySelector("#cursor").children[dets.target.dataset.index].style.transform = `translate(${x}px, ${y}px)`
+        })
+
+        // cnt.addEventListener("mouseleave", function(dets){
+        //     document.querySelector("#cursor").children[showingImage.dataset.index].style.opacity = 0
+        // })
+    })
+}
+
 revealToSpan()
 valueSetters()
 loadingAnimation()
+locoinitialize()
+cardHoverEffect()
