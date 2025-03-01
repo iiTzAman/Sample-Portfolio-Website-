@@ -18,6 +18,7 @@ function valueSetters() {
 }
 
 function revealToSpan(){
+    gsap.set("nav", {opacity: 0, height: 0})
     document.querySelectorAll(".reveal")
         .forEach(function(elem) {
             let parent = document.createElement("span")
@@ -51,44 +52,56 @@ function loadingAnimation(){
     .to("#loader .parent .child", {
         y: "-100%",
         duration: 1,
-        delay: 0.3,
+        delay: 0.5,
         ease: Power3.easeInOut
     })
     .to("#loader", {
         height: 0,
         duration: 1,
-        ease: Power3.easeOut
+        ease: Power3.easeOut,
+        onComplete: function() {
+            animateHomePage()
+        }
     })
     .to("#green", {
         height: "10%",
         top: 0,
         duration: 1,
-        delay: -1,
+        delay: -1.15,
         ease: Power3.easeOut,
-        onComplete: function() {
-            animateHomePage()
-            animateImagery()
-        }
     })
     .to("#green", {
         height: "0%",
-        duration: 2.5,
+        duration: 2,
         delay: -1,
         stagger: 0.5,
         ease: Power3.easeOut,
+    })
+    .to("nav", {
+        opacity: 1,
+        delay: -1
     })
     
 }
 
 
-function animateSvg(){
-    gsap.to("#Visual>g>g>path, #Visual>g>g>polyline", {
-        strokeDashoffset: 0,
-        duration: 4,
-        delay: -1,
-        ease: Power3.easeInOut,
-    })
-}
+// function animateSvg(){
+//     gsap.to("#Visual>g>g>path, #Visual>g>g>polyline", {
+//         strokeDashoffset: 0,
+//         duration: 3,
+//         delay: -1,
+//         ease: Power3.easeInOut,
+//     })
+// }
+
+// function animateSVG(){
+//     const pathAll = document.querySelectorAll("#uxSvg path")
+    
+//     pathAll.forEach((path)=>{
+//         console.log(path.getTotalLength())
+//     })
+// }
+
 
 function animateHomePage() {
     var tl = gsap.timeline()
@@ -96,7 +109,8 @@ function animateHomePage() {
     .to("#home .parent .child", {
         y: 0,
         stagger: .1,
-        duration: 2,
+        duration: 1,
+        delay: -0.5,
         ease: Expo.easeInOut
     })
     .to("nav a", {
@@ -111,7 +125,8 @@ function animateHomePage() {
         delay: -1,
         ease: Expo.easeInOut, 
         onComplete: function(){
-            animateSvg()
+            // animateSvg()
+            animateImagery()
         }
     })
 }
@@ -121,38 +136,59 @@ function animateImagery(){
     .to("#imagery", {
         opacity: 1,
         duration: 2,
-        delay: 4,
         ease: Expo.easeInOut,
     })
 }
 
-function locoinitialize() {
-    const scroll = new LocomotiveScroll({
-        el: document.querySelector('#main'),
-        smooth: true
-    });
-}
+// function locoinitialize() {
+//     const scroll = new LocomotiveScroll({
+//         el: document.querySelector('#home'),
+//         smooth: true
+//     });
+// }
 
 function cardHoverEffect() {
     document.querySelectorAll(".cnt")
-    .forEach(function(cnt){
+    .forEach(function (cnt) {
         var showingImage;
         cnt.addEventListener("mousemove", function(dets){
-            document.querySelector("#cursor").children[dets.target.dataset.index].style.opacity = 1
             showingImage = dets.target
-            let x = dets.pageX;
-            let y = dets.pageY;
-            document.querySelector("#cursor").children[dets.target.dataset.index].style.transform = `translate(${x}px, ${y}px)`
+            showingImage.style.filter = "grayscale(1)"
+            document.querySelector("#home").style.backgroundColor = "#" + dets.target.dataset.color
         })
 
-        // cnt.addEventListener("mouseleave", function(dets){
-        //     document.querySelector("#cursor").children[showingImage.dataset.index].style.opacity = 0
-        // })
+        cnt.addEventListener("mouseleave", function(dets){
+            showingImage.style.filter = "grayscale(0)"
+            document.querySelector("#home").style.backgroundColor = "#fcfaf8"
+        })
     })
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    const navLinks = document.querySelectorAll(".nav-link");
+    const footer = document.querySelector("#footer");
+
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    // Change nav links color when #footer is in view
+                    navLinks.forEach((link) => link.classList.add("footer-active"));
+                } else {
+                    // Reset when footer is out of view
+                    navLinks.forEach((link) => link.classList.remove("footer-active"));
+                }
+            });
+        },
+        { root: null, threshold: 0.1 } // Adjust threshold as needed
+    );
+
+    observer.observe(footer);
+});
 
 revealToSpan()
 valueSetters()
 loadingAnimation()
-locoinitialize()
+// locoinitialize()
 cardHoverEffect()
+
